@@ -53,7 +53,7 @@ Team Aerovators
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/DeotaleChinmay2001"><img src="https://avatars.githubusercontent.com/u/95205222?v=4" width="100px;" alt="Chinmay"/><br /><sub><b>Chinmay Deotale</b></sub></a><br /></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/mrudulamore"><img src="https://avatars.githubusercontent.com/u/133312331?v=4" width="100px;" alt="Mrudula"/><br /><sub><b>Mrudula More</b></sub></a><br /></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/rk-4444"><img src="https://avatars.githubusercontent.com/u/84564943?v=4" width="100px;" alt="Rahul"/><br /><sub><b>Rahul kumar</b></sub></a><br /></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/aktamoli0910"><img src="https://avatars.githubusercontent.com/u/78742814?v=4" width="100px;" alt="Abhishek"/><br /><sub><b>Abhishek Kumar Tamoli</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Aditi9800"><img src="https://avatars.githubusercontent.com/u/87092070?v=4" width="100px;" alt="Aditi"/><br /><sub><b>Aditi Sahu</b></sub></a><br /></td>
     </tr>
   </tbody>
 </table>
