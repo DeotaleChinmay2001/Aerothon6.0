@@ -52,21 +52,42 @@ function initializeSocket(server) {
                 params: {
                     fromICAO: sourceData.ICAO,
                     toICAO: destinationData.ICAO,
-                    limit: 2
+                    limit: 10
                 },
                 headers: {
                     'Authorization': 'Basic bzl6UmhvbDNZeVB4OVFFeVVwcmpYaklZbjg4c1RobGJGMlZUMXd4Sjo='
                 }
             });
+            // Initialize an array to store all paths
+            
+            const paths = []; // Array to store unique path IDs
+            const uniquePathIds = []; // Array to store unique path IDs
+            
+            for (let i = 0; i < response.data.length; i++) {
+                const pathId = response.data[i].id;
+                  console.log(pathId)
+                if (!uniquePathIds.includes(pathId)) {
 
-            const path = await axios.get(`https://api.flightplandatabase.com/plan/${response.data[0]["id"]}`, {
-                headers: {
-                    'Authorization': 'Basic bzl6UmhvbDNZeVB4OVFFeVVwcmpYaklZbjg4c1RobGJGMlZUMXd4Sjo='
+                    uniquePathIds.push(pathId);
+                    if (uniquePathIds.length === 3) break; // Break the loop once you have 3 unique path IDs
                 }
-                });
-
-            console.log("response", path.data.route);
-            socket.emit("simulationResponse", { "sourceData": sourceData, "destinationData": destinationData, "pathData":path.data.route });
+            }
+            
+            for (const pathId of uniquePathIds) {
+                try {
+                    const pathResponse = await axios.get(`https://api.flightplandatabase.com/plan/${pathId}`, {
+                        headers: {
+                            'Authorization': 'Basic bzl6UmhvbDNZeVB4OVFFeVVwcmpYaklZbjg4c1RobGJGMlZUMXd4Sjo='
+                        }
+                    });
+                    paths.push(pathResponse.data.route); // Store each path in the array
+                } catch (error) {
+                    console.error("Error fetching path:", error);
+                }
+            }
+            // Emit the array containing all paths to the frontend
+            socket.emit("simulationResponse", { "sourceData": sourceData, "destinationData": destinationData, "paths": paths });
+            
         });
     });
 
