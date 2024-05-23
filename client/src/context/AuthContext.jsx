@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userType, setUserType] = useState(null);
+  const [userName, setUserName] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("userName", email);
         setIsAuthenticated(true);
         setUserType(userType);
+        setUserName(email);
         if (userType === "pilot") {
           navigate("/pilot/home", { replace: true });
         } else if (userType === "airline") {
@@ -59,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, userType, login, logout, loading }}
+      value={{ isAuthenticated, userName,userType, login, logout, loading }}
     >
       {children}
     </AuthContext.Provider>

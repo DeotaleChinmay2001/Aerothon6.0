@@ -1,135 +1,21 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
-// import { useSocket } from "../context/SocketProvider";
+import FlightDetailsView from '../../components/Airline/FlightDetailsScreen'; 
 
-const flightsData = [
-  {
-    id: "0001",
-    source: "New York",
-    destination: "London",
-    currentLocation: "Over Atlantic Ocean",
-  },
-  {
-    id: "0002",
-    source: "San Francisco",
-    destination: "Tokyo",
-    currentLocation: "Over Pacific Ocean",
-  },
-  {
-    id: "0003",
-    source: "Los Angeles",
-    destination: "Paris",
-    currentLocation: "Over Europe",
-  },
-  {
-    id: "0004",
-    source: "Chicago",
-    destination: "Dubai",
-    currentLocation: "Over North America",
-  },
-  {
-    id: "0005",
-    source: "Miami",
-    destination: "Toronto",
-    currentLocation: "Over North America",
-  },
-  {
-    id: "0006",
-    source: "Houston",
-    destination: "Sydney",
-    currentLocation: "Over Pacific Ocean",
-  },
-  {
-    id: "0007",
-    source: "Seattle",
-    destination: "Hong Kong",
-    currentLocation: "Over Pacific Ocean",
-  },
-  {
-    id: "0008",
-    source: "Boston",
-    destination: "Singapore",
-    currentLocation: "Over Pacific Ocean",
-  },
-  {
-    id: "0009",
-    source: "Denver",
-    destination: "Berlin",
-    currentLocation: "Over Atlantic Ocean",
-  },
-  {
-    id: "0010",
-    source: "Atlanta",
-    destination: "Madrid",
-    currentLocation: "Over Atlantic Ocean",
-  },
-  {
-    id: "0011",
-    source: "Washington DC",
-    destination: "Amsterdam",
-    currentLocation: "Over Atlantic Ocean",
-  },
-  {
-    id: "0012",
-    source: "Las Vegas",
-    destination: "Rome",
-    currentLocation: "Over Atlantic Ocean",
-  },
-  {
-    id: "0013",
-    source: "Phoenix",
-    destination: "Moscow",
-    currentLocation: "Over Atlantic Ocean",
-  },
-  {
-    id: "0014",
-    source: "Dallas",
-    destination: "Beijing",
-    currentLocation: "Over Pacific Ocean",
-  },
-  {
-    id: "0015",
-    source: "Orlando",
-    destination: "Rio de Janeiro",
-    currentLocation: "Over South America",
-  },
-  {
-    id: "0016",
-    source: "San Diego",
-    destination: "Seoul",
-    currentLocation: "Over Pacific Ocean",
-  },
-  {
-    id: "0017",
-    source: "Philadelphia",
-    destination: "Cairo",
-    currentLocation: "Over Atlantic Ocean",
-  },
-  {
-    id: "0018",
-    source: "San Antonio",
-    destination: "Bangkok",
-    currentLocation: "Over Pacific Ocean",
-  },
-  {
-    id: "0019",
-    source: "Detroit",
-    destination: "Athens",
-    currentLocation: "Over Atlantic Ocean",
-  },
-  {
-    id: "0020",
-    source: "Charlotte",
-    destination: "Johannesburg",
-    currentLocation: "Over Africa",
-  },
-];
+function convertFlightDetails(details) {
+  return details.map(flight => ({
+    id: flight.flightId,
+    source: flight.coordinate.source.City,
+    destination: flight.coordinate.destination.City,
+    currentLocation: `Lat: ${flight.currentLocation.latitude}, Lon: ${flight.currentLocation.longitude}`,
+    user: flight.User
+  }));
+}
 
-const AirlineView = () => {
-//   const {
-//     socket
-//   } = useSocket();
-
+const AirlineView = ({ activeSimulations }) => {
+  const flightsData = convertFlightDetails(activeSimulations);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFlight, setSelectedFlight] = useState(null);
 
   const filteredFlights = flightsData.filter(
     (flight) =>
@@ -139,43 +25,65 @@ const AirlineView = () => {
       flight.id.includes(searchTerm)
   );
 
+  if (selectedFlight) {
+    return (
+      <FlightDetailsView 
+        flight={selectedFlight} 
+        onBack={() => setSelectedFlight(null)} 
+      />
+    );
+  }
+
   return (
-    <div className="flex flex-col py-10 lg:px-16 md:px-10 px-6 h-screen overflow-y-auto w-full">
-      <h2 className="lg:text-3xl md:text-2xl text-xl mb-4">
-        AirLine Dashboard
+    <div className="flex flex-col py-6 lg:px-12 md:px-8 px-4 h-screen overflow-y-auto w-full">
+      <h2 className="lg:text-2xl md:text-xl text-lg mb-3">
+        Airline Dashboard
       </h2>
 
-      <div className="py-4">
+      <div className="py-3">
         <input
           type="text"
           placeholder="Search for a flight"
-          className="p-3 border rounded w-full md:w-1/2 lg:w-1/3"
+          className="p-2 border rounded w-full md:w-1/2 lg:w-1/3"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
-      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
-        {filteredFlights.map((flight) => (
-          <div
-            key={flight.id}
-            className="flex flex-col rounded-lg shadow-lg border p-6 h-full justify-center bg-white"
-          >
-            <h2 className="text-lg font-semibold mb-2">
-              Flight ID: {flight.id}
-            </h2>
-            <p className="text-gray-700 mb-1">
-              <strong>Source:</strong> {flight.source}
-            </p>
-            <p className="text-gray-700 mb-1">
-              <strong>Destination:</strong> {flight.destination}
-            </p>
-            <p className="text-gray-700">
-              <strong>Current Location:</strong> {flight.currentLocation}
-            </p>
-          </div>
-        ))}
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-3">
+  {filteredFlights.length > 0 ? (
+    filteredFlights.map((flight) => (
+      <div
+        key={flight.id}
+        className="flex flex-col rounded-lg shadow-lg border p-4 h-full justify-center bg-white cursor-pointer hover:shadow-xl transition-shadow duration-200"
+        onClick={() => setSelectedFlight(flight)}
+      >
+        <h2 className="text-lg font-semibold mb-2 text-gray-900">
+          Flight ID: {flight.id}
+        </h2>
+        <p className="text-gray-700 mb-1 text-sm">
+          <strong>Source:</strong> {flight.source}
+        </p>
+        <p className="text-gray-700 mb-1 text-sm">
+          <strong>Destination:</strong> {flight.destination}
+        </p>
+        <p className="text-gray-700 mb-1 text-sm">
+          <strong>Current Location:</strong> {flight.currentLocation}
+        </p>
+        <p className="text-gray-700 text-sm">
+          <strong>Pilot:</strong> {flight.user}
+        </p>
       </div>
+    ))
+  ) : (
+    <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center py-10 bg-gray-100 rounded-lg">
+      <p className="text-red-600 text-lg font-medium">No active flights</p>
+    </div>
+  )}
+</div>
+
+
+
     </div>
   );
 };

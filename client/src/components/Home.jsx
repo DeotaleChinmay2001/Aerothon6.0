@@ -10,6 +10,8 @@ import {
   ActivityIcon, 
   FileTextIcon
 } from "lucide-react";
+import Reports from "../pages/PilotReports";
+import SensorData from "../pages/SensorData";
 
 const navLinks = [
   {
@@ -47,8 +49,8 @@ const Home = () => {
       <Navbar navLinks={navLinks} handleTabChange={handleTabChange} />
         <main className="grow">
           {activeTab === 'Navigation' && <Activity />}
-          {activeTab === 'Sensors' && <>Sensorrs</>}
-          {activeTab === 'Reports' && <>Reports</>}
+          {activeTab === 'Sensors' && <SensorData/>}
+          {activeTab === 'Reports' && <Reports/>}
         </main>
       </div>
     </>

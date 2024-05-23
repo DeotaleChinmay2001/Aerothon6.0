@@ -5,7 +5,7 @@ import PageNotFound from "./pages/404Page";
 import Home from "./components/Home";
 import Welcome from "./pages/Welcome";
 import { useAuth } from "./context/AuthContext";
-import AirlineDashboard from "./pages/AirlineHome";
+import AirlineDashboard from "./pages/Airline/AirlineHome";
 
 const App = () => {
   const { isAuthenticated, userType, loading } = useAuth();

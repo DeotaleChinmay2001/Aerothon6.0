@@ -49,3 +49,32 @@ body {
   padding: 0;
   background-color: #f4f4f4;
 }
+
+.outer {
+  display: flex;
+  height: 33px;
+  /* text-align: center;
+  justify-content: center; */
+}
+.para {
+  /* margin-left: 10px; */
+  justify-content: end;
+  padding-top: 12px;
+  width: 20px;
+}
+.sty {
+  border: 2px solid black;
+  margin-left: 10px;
+  width: 150px;
+  margin-top: 10px;
+}
+
+.healthReport {
+  display: inline;
+  width: 300px;
+  height: 270px;
+  border-radius: 2px solid black;
+  margin-left: 20px;
+  background: rgb(192, 75, 75);
+  padding: 10px;
+}

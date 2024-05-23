@@ -23,6 +23,7 @@ const SocketProvider = ({ children }) => {
     sensor_health: 1,
     weather_verdict: 2,
   });
+  const [sensorData, setSensorData] = useState(null);
   const [socket, setSocket] = useState(null);
   
   const handleSimualationStateChange = (state) =>{
@@ -30,7 +31,6 @@ const SocketProvider = ({ children }) => {
   }
   useEffect(()=>{
     initializeSocket()
-    console.log(getSocket())
     setSocket(getSocket())
   }, [])
 
@@ -49,7 +49,6 @@ const SocketProvider = ({ children }) => {
     
         socket.on("simulationUpdate", (data1) => {
           const data = JSON.parse(data1);
-          console.log("data", data);
           setCoordinates({
             longitude: data.currentLocation.longitude,
             latitude: data.currentLocation.latitude,
@@ -65,6 +64,8 @@ const SocketProvider = ({ children }) => {
             sensor_health: 1,
             weather_verdict: 2,
           });
+          setSensorData(data.sensorData)
+          
         });
         socket.on('updateActiveSimulations', (activeSimulations) => {
           console.log('Active Simulations:', activeSimulations);
@@ -80,7 +81,7 @@ const SocketProvider = ({ children }) => {
 }, [socket]);
   
   return (
-    <SocketContext.Provider value={{socket, simulationState, airplanepath, coordinates, airportData, weatherData, handleSimualationStateChange}}>{children}</SocketContext.Provider>
+    <SocketContext.Provider value={{socket, simulationState, airplanepath, coordinates, airportData, weatherData, sensorData, handleSimualationStateChange}}>{children}</SocketContext.Provider>
   );
 };
 

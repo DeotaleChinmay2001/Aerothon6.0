@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Mapcont from "../components/map/Mapcont";
 import { useSocket } from "../context/SocketProvider";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../context/AuthContext";
 
 const height = 35;
 
@@ -35,6 +36,7 @@ const Activity = () => {
   const [startAirport, setStartAirport] = useState(null);
   const [endAirport, setEndAirport] = useState(null);
 
+  const { userName } = useAuth();
 
 
   const startSimulation = () => {
@@ -42,12 +44,11 @@ const Activity = () => {
       toast.error("Please select both start and end airports");
       return;
     }
-    const user = localStorage.getItem("userName");
     socket.emit("startSimulation", {
       source: startAirport,
       destination: endAirport,
       userType : "pilot",
-      userName : user
+      userName : userName
     });
     
   };

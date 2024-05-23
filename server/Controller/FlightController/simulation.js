@@ -7,7 +7,6 @@ const {
 const { loadSensorData, getRandomRow } = require("./genSensData");
 
 const OPENWEATHER_APIKEY = process.env.OPENWEATHER_APIKEY;
-console.log("hey", OPENWEATHER_APIKEY);
 const simulationIntervals = new Map();
 
 function startSimulation(
@@ -116,6 +115,8 @@ async function stopSimulation(socketID, activeSimulations) {
     simulationIntervals.delete(socketID);
     const data = activeSimulations.get(socketID);
     const newSample = new flightHistory({
+      flightId: data.flightId,
+      User: data.User,
       coordinate: {
         source: {
           Name: data.coordinate.source.Name,
@@ -126,7 +127,7 @@ async function stopSimulation(socketID, activeSimulations) {
           Latitude: data.coordinate.source.Latitude,
           Longitude: data.coordinate.source.Longitude
         },
-        destination: {
+        destination: {  
           Name: data.coordinate.destination.Name,
           City: data.coordinate.destination.City,
           Country: data.coordinate.destination.Country,

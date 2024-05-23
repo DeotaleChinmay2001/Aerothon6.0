@@ -22,19 +22,13 @@ function initializeSocket(server) {
     console.log("Client connected");
     socket.on("setRole", (role) => {
       userRoles.set(socket.id, role);
-      console.log(`User role set to: ${role} for socket ID: ${socket.id}`);
     });
 
-    socket.on('connect', () => {
-      console.log('Connected to server', activeSimulations);
-      // socket.emit('getAllSimulations', activeSimulations);
-    });
 
     socket.on("airportData", async () => {
       try {
         const airportData = await fetchAirportData();
         socket.emit("airportData", airportData);
-        console.log("Airport data sent to client");
       } catch (error) {
         console.error(error);
       }
@@ -46,7 +40,6 @@ function initializeSocket(server) {
       const userType = data.userType;
       const userName = data.userName;
       userRoles.set(socket.id, userType);
-      console.log("userRoles", data);
       try {
         const {
           sourceData,
@@ -70,10 +63,8 @@ function initializeSocket(server) {
           weatherError: 0,
           sensorErrorCount: 0,
         }
-        console.log("sample", sample);
         activeSimulations.set(socket.id,sample )
         startSimulation(socket, waypoints, AIRCRAFT_SPEED, SOCKET_INTERVAL, activeSimulations);
-        console.log("sourceData", sourceData);
         socket.emit("simulationResponse", {
           sourceData: sourceData,
           destinationData: destinationData,
@@ -96,30 +87,25 @@ function initializeSocket(server) {
     });
     socket.on("getAllSimulations", () => {
       if (userRoles.get(socket.id) === "airline") {
-        console.log("inside");
         socket.emit("updateActiveSimulations", Array.from(activeSimulations.values()));
+        
+        const intervalId = setInterval(() => {
+          socket.emit("updateActiveSimulations", Array.from(activeSimulations.values()));
+        }, 3000);
+  
+        socket.on("disconnect", () => {
+          clearInterval(intervalId);
+        });
       }
     });
-    socket.on('updateActiveSimulations', (activeSimulations) => {
-      console.log('Active Simulations:', activeSimulations);
-      setActiveSimulations(activeSimulations);
-    });
-
 
     socket.on("disconnect", () => {
       console.log("Client disconnected");
+      stopSimulation(socket.id, activeSimulations);
     });
   });
 }
 
-
-function broadcastToAirlineUsers(io, event, data) {
-  for (const [socketId, role] of userRoles.entries()) {
-    if (role === "airline") {
-      io.to(socketId).emit(event, data);
-    }
-  }
-}
 
 
 
