@@ -5,6 +5,10 @@ const {
 } = require("./Controller/FlightController/airportData");
 const { startSimulation , stopSimulation, resumeSimulation, pauseSimulation} = require('./Controller/FlightController/simulation');
 const { prepareFlightData } = require("./Controller/FlightController/prepareFlightData")
+const AIRCRAFT_SPEED = process.env.AIRCRAFT_SPEED;
+const SOCKET_INTERVAL = process.env.SOCKET_INTERVAL;
+const activeSimulations = new Map();
+
 
 function initializeSocket(server) {
   const io = new Server(server, {
@@ -29,7 +33,7 @@ function initializeSocket(server) {
     socket.on("startSimulation", async (data) => {
       const sourceICAO = data.source.value;
       const destinationICAO = data.destination.value;
-
+      
       try {
         const {
           sourceData,
@@ -37,17 +41,27 @@ function initializeSocket(server) {
           waypoints,
           pathData
         } = await prepareFlightData(sourceICAO, destinationICAO);
-
-        const speed = 100000; 
-        const intervalTime = 3; 
-
-        startSimulation(socket, waypoints, speed, intervalTime);
-        
-        
+        sample = {
+          coordinate: {
+            source: sourceData,
+            destination: destinationData,
+          },
+          currentLocation:{
+            longitude: null,
+            latitude: null,
+          },
+          planePaused: 0,
+          status: 0,
+          weatherError: 0,
+          sensorErrorCount: 0,
+        }
+        activeSimulations.set(socket.id,sample )
+        startSimulation(socket, waypoints, AIRCRAFT_SPEED, SOCKET_INTERVAL, activeSimulations);
+        console.log("sourceData", sourceData);
         socket.emit("simulationResponse", {
           sourceData: sourceData,
           destinationData: destinationData,
-          pathData: pathData.route,
+          pathData: pathData.nodes,
         });
       } catch (error) {
         console.error(error);
@@ -56,13 +70,13 @@ function initializeSocket(server) {
 
     socket.on("stopSimulation", () => {
       console.log("Socket disconnect event. Socket ID:", socket.id);
-      stopSimulation(socket.id);
+      stopSimulation(socket.id, activeSimulations);
     });
     socket.on("pauseSimulation", () => {
-      pauseSimulation(socket.id);
+      pauseSimulation(socket.id, activeSimulations);
     });
     socket.on("resumeSimulation", () => {
-      resumeSimulation(socket.id);
+      resumeSimulation(socket.id, activeSimulations);
     });
 
     socket.on("disconnect", () => {

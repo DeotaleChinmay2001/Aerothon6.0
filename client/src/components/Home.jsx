@@ -19,6 +19,7 @@ const Home = () => {
         <main className="grow">
           {activeTab === 'Dashboard' && <Dashboard />}
           {activeTab === 'Activity' && <Activity />}
+          {activeTab === 'Transactions' && <>Transaction</>}
         </main>
       </div>
     </>
