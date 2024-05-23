@@ -42,9 +42,12 @@ const Activity = () => {
       toast.error("Please select both start and end airports");
       return;
     }
+    const user = localStorage.getItem("userName");
     socket.emit("startSimulation", {
       source: startAirport,
       destination: endAirport,
+      userType : "pilot",
+      userName : user
     });
     
   };

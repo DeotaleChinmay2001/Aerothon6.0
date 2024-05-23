@@ -36,8 +36,6 @@ const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (socket) {
-        // socket.on('connect', onConnect);
-        // socket.on('disconnect', onDisconnect);
         socket.emit('airportData');
         socket.on("simulationResponse", (data) => {
           setAirplanepath(data.pathData);
@@ -68,7 +66,9 @@ const SocketProvider = ({ children }) => {
             weather_verdict: 2,
           });
         });
-        
+        socket.on('updateActiveSimulations', (activeSimulations) => {
+          console.log('Active Simulations:', activeSimulations);
+        });
     }
     return () => {
       if(socket){

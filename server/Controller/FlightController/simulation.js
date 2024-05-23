@@ -4,7 +4,7 @@ const { calculateDistance, updatePlanePosition } = require("./geoUtils");
 const {
   getWeatherData,
 } = require("../../Controller/FlightController/weatherData");
-const { loadSensorData, getRandomRow } = require("../../genSensData");
+const { loadSensorData, getRandomRow } = require("./genSensData");
 
 const OPENWEATHER_APIKEY = process.env.OPENWEATHER_APIKEY;
 console.log("hey", OPENWEATHER_APIKEY);

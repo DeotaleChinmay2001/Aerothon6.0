@@ -5,6 +5,7 @@ import PageNotFound from "./pages/404Page";
 import Home from "./components/Home";
 import Welcome from "./pages/Welcome";
 import { useAuth } from "./context/AuthContext";
+import AirlineDashboard from "./pages/AirlineHome";
 
 const App = () => {
   const { isAuthenticated, userType, loading } = useAuth();
@@ -23,7 +24,7 @@ const App = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route
         path="/airline/home"
-        element={isAuthenticated && userType === "airline" ?<>Airline</> : <Navigate to="/login" />}
+        element={isAuthenticated && userType === "airline" ?<AirlineDashboard/>: <Navigate to="/login" />}
       />
       <Route
         path="/pilot/home"

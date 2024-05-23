@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userType", userType);
+        localStorage.setItem("userName", email);
         setIsAuthenticated(true);
         setUserType(userType);
         if (userType === "pilot") {
