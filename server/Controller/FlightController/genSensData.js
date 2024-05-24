@@ -35,7 +35,6 @@ async function sensData() {
   try {
     await loadSensorData(); // Load the data first
     const randomRow = getRandomRow(); 
-    console.log("randomRow", randomRow); 
   } catch (error) {
     console.error('Error loading or processing sensor data:', error);
   }

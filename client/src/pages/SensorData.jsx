@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
 import { useSocket } from "../context/SocketProvider";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 
@@ -64,18 +63,7 @@ function SensorData() {
     }))
   );
 
-  const options = {
-    responsive: true,
-    tension: 0.4,
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
-    },
-  };
 
-  const labels = labData;
-  const dt = { labels, datasets: chartData };
 
   useEffect(() => {
     const generateRandomNumbers = () => {
@@ -129,10 +117,8 @@ function SensorData() {
       </div>
     
       <div className="flex flex-col lg:flex-row lg:space-x-8 py-6 w-full">
-        <div className="flex flex-col rounded-md border w-full lg:w-2/3 p-5 justify-center">
-          <Line style={{ height: "100px" }} options={options} data={dt} />
-        </div>
-        <div className="flex flex-col rounded-md border w-full lg:w-1/3 p-5 justify-center bg-red-200">
+        
+        <div className="flex flex-col rounded-md border w-full lg:w-3/3 p-5 justify-center bg-red-200">
           <div className="text-center text-lg font-semibold">Health Report</div>
         </div>
       </div>

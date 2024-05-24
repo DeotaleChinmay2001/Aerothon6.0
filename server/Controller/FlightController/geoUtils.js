@@ -32,7 +32,7 @@ function updatePlanePosition(currentPosition, destination, speed, intervalTime) 
 
   const newCoords = geolib.computeDestinationPoint(
     { latitude: currentPosition.lat, longitude: currentPosition.lon },
-    distanceToTravel * 1000, // Convert to meters
+    distanceToTravel * 1000, 
     bearing
   );
 

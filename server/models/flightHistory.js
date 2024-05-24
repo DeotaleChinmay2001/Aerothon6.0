@@ -23,7 +23,7 @@ const currentLocationSchema = new mongoose.Schema({
 
 const sampleSchema = new mongoose.Schema({
   flightId: { type: String, default: uuidv4, unique: true },
-  User: { type: String, required: true },
+  User: { type: String },
   coordinate: { type: coordinateSchema, required: true },
   currentLocation: { type: currentLocationSchema, required: true },
   planePaused: { type: Number, default: 0 },

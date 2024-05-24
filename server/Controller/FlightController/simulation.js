@@ -5,9 +5,60 @@ const {
   getWeatherData,
 } = require("../../Controller/FlightController/weatherData");
 const { loadSensorData, getRandomRow } = require("./genSensData");
+const {findNearestAirports } = require('./flightPlan')
+const {prepareFlightDataAlt} = require('./prepareFlightData')
 
 const OPENWEATHER_APIKEY = process.env.OPENWEATHER_APIKEY;
 const simulationIntervals = new Map();
+
+async function getAlternateRoute(socket, socketID, activeSimulations, coordinates) {
+  if (!socketID || !activeSimulations.has(socketID)) {
+    console.error("Invalid socket ID or simulation data not found for socket:", socketID);
+    return;
+  }
+
+  const simulationData = activeSimulations.get(socketID);
+  const { currentLocation, currentIndex, path } = simulationData;
+
+  try {
+    const nearestAirports = await findNearestAirports(currentLocation.latitude, currentLocation.longitude);
+    if (nearestAirports.length === 0) {
+      console.error("No nearest airport found from current location:", currentLocation);
+      return;
+    }
+    const nearAirport = nearestAirports.response[0].id;
+    const destinationAirport = simulationData.coordinate.destination.ICAO;
+
+    const currentIndex = simulationData.path.findIndex(point => (
+      point.lat === currentLocation.latitude && point.lon === currentLocation.longitude
+    ));
+
+    let { updatedPath } = await prepareFlightDataAlt(nearAirport, destinationAirport, simulationData, currentIndex);
+    
+    updatedPath = updatedPath.map(node => {
+      const convertedNode = { ...node };
+      if (node.latitude !== undefined) {
+        convertedNode.lat = node.latitude;
+        delete convertedNode.latitude;
+      }
+      if (node.longitude !== undefined) {
+        convertedNode.lon = node.longitude;
+        delete convertedNode.longitude;
+      }
+      return convertedNode;
+    });
+
+    
+    simulationData.pathUsed = updatedPath;
+    simulationData.path = updatedPath;
+    simulationData.currentIndex = simulationData.currentIndex+1; 
+    activeSimulations.set(socketID, simulationData);
+
+    socket.emit("alternateRouteResponse", { updatedPath });
+  } catch (error) {
+    console.error("Error fetching alternate route:", error);
+  }
+}
 
 function startSimulation(
   socket,
@@ -20,24 +71,23 @@ function startSimulation(
     console.error("Invalid socket object passed to startSimulation");
     return;
   }
-  if (activeSimulations.has(socket.id)) {
-    const simulation = activeSimulations.get(socket.id);
-    simulation.status = 1;
-    simulation.planePath = waypoints;
-    activeSimulations.set(socket.id, simulation);
-  }
-  let currentWaypointIndex = 0;
+
   let planeState = {
     lat: waypoints[0].lat,
     lon: waypoints[0].lon,
   };
-
+  
   const simulationInterval = setInterval(async () => {
+    
+    let currentWaypointIndex =activeSimulations.get(socket.id).currentIndex;
     if (activeSimulations.get(socket.id).status) {
+     let waypoints2 = activeSimulations.get(socket.id).path;
+     const nextWaypoint2 = waypoints2[currentWaypointIndex + 1];
       const currentWaypoint = waypoints[currentWaypointIndex];
       const nextWaypoint = waypoints[currentWaypointIndex + 1];
-
-      if (!nextWaypoint) {
+      console.log("nextWaypoint2",nextWaypoint2)
+      console.log("nextWaypoint1",nextWaypoint)
+      if (!nextWaypoint2) {
         clearInterval(simulationInterval);
         simulationIntervals.delete(socket.id);
         console.log("Plane has arrived at the final destination");
@@ -46,17 +96,20 @@ function startSimulation(
 
       const { newLatitude, newLongitude } = updatePlanePosition(
         planeState,
-        nextWaypoint,
+        nextWaypoint2,
         speed,
         intervalTime
       );
-
+      console.log("waypoints ================", planeState);
+      console.log(nextWaypoint2);
       planeState.lat = newLatitude;
       planeState.lon = newLongitude;
       if (activeSimulations.has(socket.id)) {
         const simulation = activeSimulations.get(socket.id);
         simulation.currentLocation.longitude = planeState.lon;
         simulation.currentLocation.latitude = planeState.lat;
+        simulation.path = activeSimulations.get(socket.id).path,
+        simulation.currentIndex = currentWaypointIndex,
         activeSimulations.set(socket.id, simulation);
       }
       const weatherdata = await getWeatherData(
@@ -72,6 +125,8 @@ function startSimulation(
       } catch (error) {
         console.error("Error loading or processing sensor data:", error);
       }
+
+      console.log("sesor data", sensorData);
       socket.emit(
         "simulationUpdate",
         JSON.stringify({
@@ -83,20 +138,22 @@ function startSimulation(
           sensorData: sensorData,
         })
       );
-      console.log("Plane's Current Position:", activeSimulations.get(socket.id));
-
+      console.log("newwaypoint", nextWaypoint);
+      console.log("newwaypoint", nextWaypoint2);
       const distanceToNextWaypoint = calculateDistance(
         planeState.lat,
         planeState.lon,
-        nextWaypoint.lat,
-        nextWaypoint.lon
+        nextWaypoint2.lat,
+        nextWaypoint2.lon
       );
 
       if (distanceToNextWaypoint <= 0.1) {
         currentWaypointIndex++;
+        let temp = activeSimulations.get(socket.id);
+        temp.currentIndex = currentWaypointIndex;
+        activeSimulations.set(socket.id, temp);
       }
     } else {
-      // console.log("paused", activeSimulations[socket.id], socket.id);
     }
   }, intervalTime * 1000);
 
@@ -195,4 +252,5 @@ module.exports = {
   pauseSimulation,
   resumeSimulation,
   simulationIntervals,
+  getAlternateRoute
 };

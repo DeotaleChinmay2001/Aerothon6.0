@@ -10,13 +10,10 @@ const {
 
 async function prepareFlightData(sourceICAO, destinationICAO) {
     const airportData = await fetchAirportData();
-    console.log("1abycuvwe", airportData);
     const sourceData = findAirportDataByICAO(airportData, sourceICAO);
-    console.log("1abycuvwe", sourceData);
 
     const destinationData = findAirportDataByICAO(airportData, destinationICAO);
     const flightPlan = await fetchFlightPlan(sourceData.ICAO, destinationData.ICAO);
-    console.log("flightPlan",flightPlan);
     const pathData = await fetchPathForFlightPlan(flightPlan.id);
     
     const path = [sourceData].concat(pathData.nodes).concat([destinationData]);
@@ -28,4 +25,40 @@ async function prepareFlightData(sourceICAO, destinationICAO) {
     return { sourceData, destinationData, waypoints, pathData };
   }
   
-  module.exports = { prepareFlightData };
+  async function prepareFlightDataAlt(startAirportICAO, destinationICAO, simulationData) {
+    try {
+      startAirportICAO = startAirportICAO.toUpperCase();
+      const flightPlan = await fetchFlightPlan(startAirportICAO, destinationICAO);
+      const pathData = await fetchPathForFlightPlan(flightPlan.id);
+    
+       const currentLocation = simulationData.currentLocation;
+       let updatedPath =[];
+       const previousPath = simulationData.path;
+       const currentIndex = simulationData.currentIndex;
+       
+       
+       
+       for (let i = 0; i <= currentIndex; i++) {
+         updatedPath.push(previousPath[i]);
+        }
+        updatedPath.push(currentLocation);
+        
+        for (const node of pathData.nodes) {
+          updatedPath.push(node);
+       }
+
+
+
+       return {  updatedPath };
+      // Construct waypoints using the destination airport
+      
+      
+    } catch (error) {
+      console.error('Error preparing alternate route data:', error);
+      throw error;
+    }
+  }
+
+
+
+  module.exports = { prepareFlightData , prepareFlightDataAlt};

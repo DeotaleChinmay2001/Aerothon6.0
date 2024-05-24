@@ -3,10 +3,11 @@ const geolib = require('geolib');
 const {
   fetchAirportData,
 } = require("./Controller/FlightController/airportData");
-const { startSimulation , stopSimulation, resumeSimulation, pauseSimulation} = require('./Controller/FlightController/simulation');
+const { startSimulation , getAlternateRoute,stopSimulation, resumeSimulation, pauseSimulation} = require('./Controller/FlightController/simulation');
 const { prepareFlightData } = require("./Controller/FlightController/prepareFlightData")
 const AIRCRAFT_SPEED = process.env.AIRCRAFT_SPEED;
 const SOCKET_INTERVAL = process.env.SOCKET_INTERVAL;
+const {findNearestAirports} = require('./Controller/FlightController/flightPlan')
 const activeSimulations = new Map();
 const userRoles = new Map(); 
 const { v4: uuidv4 } = require('uuid');
@@ -47,6 +48,7 @@ function initializeSocket(server) {
           waypoints,
           pathData
         } = await prepareFlightData(sourceICAO, destinationICAO);
+        console.log("sourceData",sourceData);
         sample = {
           flightId: uuidv4(),
           User: userName,
@@ -55,13 +57,16 @@ function initializeSocket(server) {
             destination: destinationData,
           },
           currentLocation:{
-            longitude: null,
-            latitude: null,
+            longitude: sourceData.Latitude,
+            latitude: sourceData.Longitude,
           },
           planePaused: 0,
-          status: 0,
+          status: 1,
           weatherError: 0,
           sensorErrorCount: 0,
+          pathUsed: waypoints,
+          path: waypoints,
+          currentIndex: 0
         }
         activeSimulations.set(socket.id,sample )
         startSimulation(socket, waypoints, AIRCRAFT_SPEED, SOCKET_INTERVAL, activeSimulations);
@@ -85,6 +90,18 @@ function initializeSocket(server) {
     socket.on("resumeSimulation", () => {
       resumeSimulation(socket.id, activeSimulations);
     });
+
+    socket.on("getAlternateRoute", async (coordinates) => {
+     
+      try {
+        getAlternateRoute(socket, socket.id,activeSimulations,coordinates);
+        const nearestAirports = await findNearestAirports(coordinates.latitude, coordinates.longitude);
+        socket.emit("nearestAirportsResponse", nearestAirports);
+      } catch (error) {
+        console.error("Error fetching nearest airports:", error);
+      }
+    });
+
     socket.on("getAllSimulations", () => {
       if (userRoles.get(socket.id) === "airline") {
         socket.emit("updateActiveSimulations", Array.from(activeSimulations.values()));

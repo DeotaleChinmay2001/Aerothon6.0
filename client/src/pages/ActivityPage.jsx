@@ -38,7 +38,6 @@ const Activity = () => {
 
   const { userName } = useAuth();
 
-
   const startSimulation = () => {
     if (startAirport === null || endAirport === null) {
       toast.error("Please select both start and end airports");
@@ -72,9 +71,18 @@ const Activity = () => {
   };
 
   const getAlternateRoute = () => {
-    console.log("getAlternateRoute");
+    console.log("inn", coordinates);
+    if (coordinates) {
+      console.log("inn")
+      // setIsFetchingAlternateRoute(true);
+      socket.emit("getAlternateRoute", {
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude
+      });
+    }
   };
 
+  console.log("userName", coordinates );
 
   return (
     <div className="flex flex-col py-4 lg:px-12 md:px-8 px-4 h-screen overflow-y-auto w-full">
@@ -156,7 +164,7 @@ const Activity = () => {
           <button
             className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-2`}
             onClick={getAlternateRoute}
-            disabled={simulationState !== "stopped"}
+            // disabled={simulationState !== "stopped"}
           >
             <FaMap />
           </button>
