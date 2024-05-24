@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import pickle
 import numpy as np
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model # type: ignore
 import pandas as pd
 from sklearn import preprocessing
 from flask_cors import CORS
@@ -73,7 +73,7 @@ def sensor_predict():
     threshold = 0.5
     predicted_labels = (new_predictions > threshold).astype(int)
     
-    return jsonify({'prediction': predicted_labels.tolist()})
+    return jsonify({'prediction': int(predicted_labels[0][0])})
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

@@ -23,10 +23,39 @@ const SocketProvider = ({ children }) => {
     sensor_health: 1,
     weather_verdict: 2,
   });
-  const [sensorData, setSensorData] = useState(null);
+  const [sensorData, setSensorData] = useState({
+    "id": "0",
+    "cycle": "0",
+    "setting1": "0",
+    "setting2": "0",
+    "setting3": "0",
+    "s1": "0",
+    "s2": "0",
+    "s3": "0",
+    "s4": "0",
+    "s5": "0",
+    "s6": "0",
+    "s7": "0",
+    "s8": "0",
+    "s9": "0",
+    "s10": "0",
+    "s11": "0",
+    "s12": "0",
+    "s13": "0",
+    "s14": "0",
+    "s15": "0",
+    "s16": "0",
+    "s17": "0",
+    "s18": "0",
+    "s19": "0",
+    "s20": "0",
+    "s21": "0"
+  }
+  );
   const [sensorDataQueue, setSensorDataQueue] = useState([]);
   const [socket, setSocket] = useState(null);
-
+  const [predictions, setPredictions] = useState({weather:0, sensor:0});
+  const [servermsg, setServermsg] = useState(null);
   const handleSimualationStateChange = (state) => {
     setSimulationState(state);
   };
@@ -41,12 +70,18 @@ const SocketProvider = ({ children }) => {
       socket.on("simulationResponse", (data) => {
         setAirplanepath(data.pathData);
         setSimulationState("running");
-      });
+      }); 
       socket.on("airportData", (data) => {
         setAirportData(
           data.map((airport) => ({ value: airport.ICAO, label: airport.Name }))
         );
       });
+
+      socket.on("simulationMessage", ({ message }) => {
+        console.log("Simulation message:", message);
+        setServermsg(message)
+      });
+
 
       socket.on("alternateRouteResponse", (data)=>{
       //   const convertedPath = data.updatedPath.map(node => {
@@ -70,7 +105,6 @@ const SocketProvider = ({ children }) => {
       })
       socket.on("simulationUpdate", (data1) => {
         const data = JSON.parse(data1);
-        console.log("simulationUpdate", data);
         
         
         setSensorDataQueue(sensorDataQueue.push(data.sensorData));
@@ -93,6 +127,11 @@ const SocketProvider = ({ children }) => {
           weather_verdict: 2,
         });
         setSensorData(data.sensorData);
+        setPredictions({
+          weather: data.prediction.weather.prediction,
+          sensor : data.prediction.sensor.prediction,
+        });
+        console.log("data.sensorData",data.sensorData);
       });
       socket.on("updateActiveSimulations", (activeSimulations) => {
         console.log("Active Simulations:", activeSimulations);
@@ -118,7 +157,9 @@ const SocketProvider = ({ children }) => {
         weatherData,
         sensorData,
         sensorDataQueue,
-        handleSimualationStateChange,
+        predictions,
+        servermsg,
+        handleSimualationStateChange
       }}
     >
       {children}

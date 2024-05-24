@@ -12,7 +12,7 @@ const findNearestAirports = async (latitude, longitude) => {
       params: {
         p: `${latitude},${longitude}`,
         limit: 2,
-        radius: '200km',
+        radius: '100km',
         filter: 'medairport',
         client_id: NEAREST_AIRPORTS_CLIENT_ID,
         client_secret: NEAREST_AIRPORTS_CLIENT_SECRET
@@ -33,7 +33,7 @@ const fetchFlightPlan = async (fromICAO, toICAO) => {
       params: {
         fromICAO: fromICAO,
         toICAO: toICAO,
-        limit: 2
+        limit: 1
       },
       headers: {
         'Authorization': `Basic ${AIRCRAFT_PLAN_KEY}`

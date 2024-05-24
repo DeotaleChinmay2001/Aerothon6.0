@@ -4,19 +4,32 @@ import FlightDetailsView from '../../components/Airline/FlightDetailsScreen';
 
 function convertFlightDetails(details) {
   return details.map(flight => ({
+    
     id: flight.flightId,
     source: flight.coordinate.source.City,
     destination: flight.coordinate.destination.City,
     currentLocation: `Lat: ${flight.currentLocation.latitude}, Lon: ${flight.currentLocation.longitude}`,
-    user: flight.User
+    user: flight.User,
+    planePaused:flight.planePaused,
+    sensorErrorCount:flight.sensorErrorCount,
+    status:flight.status,
+    weatherError:flight.weatherError,
+    planePath:flight.planePath,
+    sourceDet:flight.coordinate.source,
+    destDet:flight.coordinate.destination,
+    latitude:`${flight.currentLocation.latitude}`,
+    longitude:`${flight.currentLocation.longitude}`,
+    
   }));
+
 }
 
 const AirlineView = ({ activeSimulations }) => {
   const flightsData = convertFlightDetails(activeSimulations);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFlight, setSelectedFlight] = useState(null);
-
+  const [selectedLatitude, setSelectedLatitude] = useState(null);
+  const [selectedLongitude, setSelectedLongitude] = useState(null);
+const [selectedFlight, setSelectedFlight] = useState(null);
   const filteredFlights = flightsData.filter(
     (flight) =>
       flight.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,9 +41,15 @@ const AirlineView = ({ activeSimulations }) => {
   if (selectedFlight) {
     return (
       <FlightDetailsView 
-        flight={selectedFlight} 
-        onBack={() => setSelectedFlight(null)} 
-      />
+      flight={selectedFlight} 
+      latitude={selectedLatitude} 
+        longitude={selectedLongitude} 
+      onBack={() => {
+        setSelectedFlight(null);
+        setSelectedLatitude(null); 
+        setSelectedLongitude(null); 
+      }} 
+    />
     );
   }
 

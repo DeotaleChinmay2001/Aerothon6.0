@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState,  Component } from "react";
+import { useState,  Component, useEffect } from "react";
 import Select from "react-select";
 import { FixedSizeList as List } from "react-window";
 import { FaPlay, FaStop, FaPause, FaPlayCircle, FaMap } from "react-icons/fa";
@@ -8,6 +8,7 @@ import Mapcont from "../components/map/Mapcont";
 import { useSocket } from "../context/SocketProvider";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
+
 
 const height = 35;
 
@@ -31,13 +32,13 @@ class MenuList extends Component {
 }
 
 const Activity = () => {
-  const {socket, airplanepath, simulationState, coordinates, weatherData, airportData, handleSimualationStateChange} = useSocket();
+  const {socket, airplanepath, simulationState, coordinates, weatherData, airportData, handleSimualationStateChange, predictions, servermsg} = useSocket();
 
   const [startAirport, setStartAirport] = useState(null);
   const [endAirport, setEndAirport] = useState(null);
 
   const { userName } = useAuth();
-
+  console.log("prediction", predictions)
   const startSimulation = () => {
     if (startAirport === null || endAirport === null) {
       toast.error("Please select both start and end airports");
@@ -66,7 +67,6 @@ const Activity = () => {
     socket.emit("stopSimulation");
     setStartAirport(null);
     setEndAirport(null);
-    toast.success("Simulation stopped");
     handleSimualationStateChange("stopped");
   };
 
@@ -83,6 +83,11 @@ const Activity = () => {
   };
 
   console.log("userName", coordinates );
+  useEffect(() => {
+    if (servermsg) {
+      toast.info(servermsg);
+    }
+  }, [servermsg]);
 
   return (
     <div className="flex flex-col py-4 lg:px-12 md:px-8 px-4 h-screen overflow-y-auto w-full">
@@ -239,7 +244,7 @@ const Activity = () => {
               ></i>
               <p className="text-sm text-gray-600 ml-2">
                 <strong>Sensor Health:</strong>{" "}
-                {weatherData.sensor_health ? "Operational" : "Non-operational"}
+                { predictions.sensor }
               </p>
             </div>
             <div className="flex items-center">
@@ -254,7 +259,7 @@ const Activity = () => {
               ></i>
               <p className="text-sm text-gray-600 ml-2">
                 <strong>Weather Verdict:</strong>{" "}
-                {["Good", "Moderate", "Poor"][weatherData.weather_verdict]}
+                {predictions.weather ? predictions.weather : '-'}
               </p>
             </div>
           </div>

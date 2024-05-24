@@ -66,7 +66,8 @@ function initializeSocket(server) {
           sensorErrorCount: 0,
           pathUsed: waypoints,
           path: waypoints,
-          currentIndex: 0
+          currentIndex: 0,
+          sensorList:[],
         }
         activeSimulations.set(socket.id,sample )
         startSimulation(socket, waypoints, AIRCRAFT_SPEED, SOCKET_INTERVAL, activeSimulations);
@@ -83,12 +84,18 @@ function initializeSocket(server) {
     socket.on("stopSimulation", () => {
       console.log("Socket disconnect event. Socket ID:", socket.id);
       stopSimulation(socket.id, activeSimulations);
+      activeSimulations.delete(socket.id);
+      socket.emit("simulationMessage", { message: "Simulation stopped successfully" });
     });
     socket.on("pauseSimulation", () => {
       pauseSimulation(socket.id, activeSimulations);
+      socket.emit("simulationMessage", { message: "Simulation paused successfully" });
+
     });
     socket.on("resumeSimulation", () => {
       resumeSimulation(socket.id, activeSimulations);
+      socket.emit("simulationMessage", { message: "Simulation resumed successfully" });
+
     });
 
     socket.on("getAlternateRoute", async (coordinates) => {
@@ -112,6 +119,8 @@ function initializeSocket(server) {
   
         socket.on("disconnect", () => {
           clearInterval(intervalId);
+          stopSimulation(socket.id, activeSimulations);
+          activeSimulations.delete(socket.id);
         });
       }
     });
@@ -119,12 +128,9 @@ function initializeSocket(server) {
     socket.on("disconnect", () => {
       console.log("Client disconnected");
       stopSimulation(socket.id, activeSimulations);
+      activeSimulations.delete(socket.id);
     });
   });
 }
-
-
-
-
 
 module.exports = initializeSocket;

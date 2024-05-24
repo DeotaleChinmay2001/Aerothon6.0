@@ -5,7 +5,7 @@ const Header = () => {
         <header className="header">
             <img src="logo.png" alt="Aerovators" className="logo" />
             <nav className="nav">
-                <a href="#">Login</a>
+                <a href="/login">Login</a>
                 <a href="#">SignUp</a>
             </nav>
            

@@ -51,52 +51,31 @@ function SensorData() {
   // Split the divCount array into arrays, one for each column
   const columns = Array.from({ length: 5 }, (_, colIdx) => divCount.slice(colIdx * elementsPerColumn, (colIdx + 1) * elementsPerColumn));
   
-  const [colr, setColor] = useState(Array(sensorKeys.length).fill("green"));
-  const [labData, setLabData] = useState([]);
+  const [colr, setColor] = useState(Array(Object.keys(sensorData).length).fill("green"));
+  
 
-  const [chartData, setChartData] = useState(
-    sensorKeys.map(key => ({
-      label: key.toUpperCase(),
-      data: [0],
-      borderColor: "",
-      backgroundColor: "rgba(0,130,126,0.5)",
-    }))
-  );
-
-
+  const updateColors = () => {
+    const updatedColors = sensorKeys.map((key) => {
+      const value = sensorData[key];
+      const [lowerThreshold, upperThreshold] = thresholds[key];
+      if (value <= lowerThreshold) {
+        return "green";
+      } else if (value > lowerThreshold && value <= upperThreshold) {
+        return "yellow";
+      } else {
+        return "red";
+      }
+    });
+    setColor(updatedColors);
+  };  
 
   useEffect(() => {
-    const generateRandomNumbers = () => {
-      const numbers = sensorKeys.map(key => parseFloat(sensorData[key]));
-      const col = numbers.map((num, index) => {
-        const thresholdsForKey = thresholds[sensorKeys[index]];
-        if (num <= thresholdsForKey[0]) return "green";
-        else if (num <= thresholdsForKey[1] && num > thresholdsForKey[0]) return "orange";
-        else return "red";
-      });
-      setColor(col);
-    };
-
-    const updateChart = () => {
-      const arr = chartData.map((data, index) => {
-        let newData = { ...data };
-        newData.data.push(sensorData[sensorKeys[index]]);
-        newData.borderColor = colr[index];
-        return newData;
-      });
-      setChartData(arr);
-      let d = new Date();
-      let t = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-      setLabData(prevData => [...prevData, t]);
-    };
-
-    const timer = setTimeout(() => {
-      generateRandomNumbers();
-      updateChart();
-    }, 7000);
-
-    return () => clearTimeout(timer);
+    updateColors();
   }, [sensorData]);
+
+
+
+
 
   return (
     <div className="flex flex-col py-4 lg:px-12 md:px-8 px-4 h-screen overflow-y-auto w-full">

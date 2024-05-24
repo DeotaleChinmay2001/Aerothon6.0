@@ -1,7 +1,6 @@
 import Head from "../components/Header";
 import MainContent from "../components/MainContent";
 import GlobeComponent from "../components/GlobeComponent";
-import MapComponent from "../components/MapComponent";
 import Foot from "../components/Footer";
 import "../App.css";
 
@@ -13,9 +12,9 @@ function Welcome() {
         <div className="item">
           <MainContent />
         </div>
-        <div className="item">
+        {/* <div className="item">
           <MapComponent />
-        </div>
+        </div> */}
         <div className="item">
           <GlobeComponent />
         </div>
