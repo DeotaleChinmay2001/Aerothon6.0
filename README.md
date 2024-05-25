@@ -28,7 +28,7 @@ To develop a solution that optimizes flight navigation by integrating real-time 
 -Comprehensive Access: Airlines have complete access to viewing flight data and navigation updates.</br>
 -Authentication features</br>
 -Interactive Dashboard: Features an interactive and responsive dashboard for meaningful insights and decision-making.</br>
-
+- Video demo-  https://drive.google.com/file/d/1GW2xmoI5vmY8NhTs6Vz2S3aXblSXWkYB/view?usp=sharing
 ## Technologies used
 - Frontend: <br/>
    Framework - React<br/>
