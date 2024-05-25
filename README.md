@@ -1,4 +1,3 @@
-![image](https://github.com/DeotaleChinmay2001/Aerothon6.0/assets/87092070/48fcb1a8-34ac-4687-b5da-f0062f988157)<h1 align="center">
   AIRBUS AEROTHON 6.0 🛫
   <br>
   <img src="https://cdn-icons-png.flaticon.com/512/7893/7893979.png" alt="airplane pic" width="300">
