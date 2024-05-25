@@ -8,10 +8,9 @@ dotenv.config();
 const secretKey = '123';
 
 module.exports.login = async (req, res) => {
-  const { email, password } = req.body;
-
+  const { email, password , userType} = req.body;
   try {
-    const user = await User.findOne({ username: email, password });
+    const user = await User.findOne({ username: email, password , userType: userType});
     if (user) {
       const token = jwt.sign({ email: user.email, userType: user.userType }, secretKey);
       res.status(200).json({ message: "User authenticated successfully", token });

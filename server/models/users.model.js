@@ -9,19 +9,4 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// const newUser = new User({
-//   _id: new mongoose.Types.ObjectId(), 
-//   username: 'chinmay',
-//   password: '123',
-//   userType: 'regular' 
-// });
-
-// newUser.save()
-//   .then(() => {
-//     console.log('User added successfully');
-//   })
-//   .catch((error) => {
-//     console.error('Error adding user:', error);
-//   });
-
 module.exports = User;

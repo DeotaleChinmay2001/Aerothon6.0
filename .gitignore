@@ -4,6 +4,9 @@
 
 /server/node_modules/
 
+/flaskserver/venv
+
+/
 /dist/
 /build/
 *.log
