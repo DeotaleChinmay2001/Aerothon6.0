@@ -86,7 +86,7 @@ const Activity = () => {
 
   return (
     <div className="flex flex-col py-4 lg:px-12 md:px-8 px-4 h-screen overflow-y-auto w-full">
-      <h2 className="text-3xl mb-4">Activity</h2>
+      <h2 className="text-3xl mb-4">Monitoring</h2>
       <div className="flex flex-col lg:flex-row lg:space-x-4 py-4">
         <div className="flex-1 mb-4 lg:mb-0">
           <Select

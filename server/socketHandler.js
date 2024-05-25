@@ -25,7 +25,6 @@ function initializeSocket(server) {
       userRoles.set(socket.id, role);
     });
 
-
     socket.on("airportData", async () => {
       try {
         const airportData = await fetchAirportData();

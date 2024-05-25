@@ -2,7 +2,7 @@
 import AirlineMap from "./AirlineMap";
 
 const FlightDetailsView = ({ flight, onBack }) => {
-  return (
+    return (
     <div className="bg-white flex flex-col py-6 lg:px-12 md:px-8 px-4 h-screen overflow-y-auto w-full">
       <div className="h-full overflow-y-auto">
         <div className="rounded-lg shadow-md p-6">

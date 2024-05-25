@@ -14,7 +14,7 @@ function convertFlightDetails(details) {
     sensorErrorCount:flight.sensorErrorCount,
     status:flight.status,
     weatherError:flight.weatherError,
-    planePath:flight.planePath,
+    planePath:flight.path,
     sourceDet:flight.coordinate.source,
     destDet:flight.coordinate.destination,
     latitude:`${flight.currentLocation.latitude}`,
