@@ -82,10 +82,6 @@ router.get('/user/:userName', getUserReports) :- it invokes the getUserReports f
 
 Install project dependencies: 
 
-Client
-npm init –y
-npm install
-npm run dev
 
 Backend (Nodejs Server)
 npm init –y
