@@ -2,11 +2,6 @@
 import AirlineMap from "./AirlineMap";
 
 const FlightDetailsView = ({ flight, onBack }) => {
-console.log(flight.latitude,"latitude==------------------")
-// const currentLocationParts = flight.currentLocation.split(",");
-// const latitude = parseFloat(currentLocationParts[0].split(":")[1]);
-// const longitude = parseFloat(currentLocationParts[1].split(":")[1]);
-  
   return (
     <div className="bg-white flex flex-col py-6 lg:px-12 md:px-8 px-4 h-screen overflow-y-auto w-full">
       <div className="h-full overflow-y-auto">

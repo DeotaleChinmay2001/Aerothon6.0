@@ -38,7 +38,6 @@ const Activity = () => {
   const [endAirport, setEndAirport] = useState(null);
 
   const { userName } = useAuth();
-  console.log("prediction", predictions)
   const startSimulation = () => {
     if (startAirport === null || endAirport === null) {
       toast.error("Please select both start and end airports");
@@ -71,10 +70,7 @@ const Activity = () => {
   };
 
   const getAlternateRoute = () => {
-    console.log("inn", coordinates);
     if (coordinates) {
-      console.log("inn")
-      // setIsFetchingAlternateRoute(true);
       socket.emit("getAlternateRoute", {
         latitude: coordinates.latitude,
         longitude: coordinates.longitude
@@ -82,7 +78,6 @@ const Activity = () => {
     }
   };
 
-  console.log("userName", coordinates );
   useEffect(() => {
     if (servermsg) {
       toast.info(servermsg);

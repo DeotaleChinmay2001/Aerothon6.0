@@ -32,7 +32,6 @@ const Mapcont = ({ simulation, coordinates }) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {/* Render CircleMarkers for middle positions */}
-      {console.log(simulation, typeof(simulation))}
       {simulation && simulation.slice(1, -1).map((node, index) => (
         <CircleMarker key={index} center={[node.lat, node.lon]} radius={5} fillColor="black" fillOpacity={0.8}>
           <Popup>{node.name ? node.name : node.ident}</Popup>

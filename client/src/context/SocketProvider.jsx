@@ -78,30 +78,13 @@ const SocketProvider = ({ children }) => {
       });
 
       socket.on("simulationMessage", ({ message }) => {
-        console.log("Simulation message:", message);
         setServermsg(message)
       });
 
 
       socket.on("alternateRouteResponse", (data)=>{
-      //   const convertedPath = data.updatedPath.map(node => {
-      //     const convertedNode = { ...node };
-          
-      //     if (node.latitude !== undefined) {
-      //         convertedNode.lat = node.latitude;
-      //         delete convertedNode.latitude;
-      //     }
-      
-      //     if (node.longitude !== undefined) {
-      //         convertedNode.lon = node.longitude;
-      //         delete convertedNode.longitude;
-      //     }
-      
-      //     return convertedNode;
-      // });
-      // console.log("dataaaaaaaaaa", convertedPath);
+   
         setAirplanepath(data.updatedPath);
-        console.log("dataaaaaaaaaa1",  airplanepath);
       })
       socket.on("simulationUpdate", (data1) => {
         const data = JSON.parse(data1);
@@ -131,7 +114,6 @@ const SocketProvider = ({ children }) => {
           weather: data.prediction.weather.prediction,
           sensor : data.prediction.sensor.prediction,
         });
-        console.log("data.sensorData",data.sensorData);
       });
       socket.on("updateActiveSimulations", (activeSimulations) => {
         console.log("Active Simulations:", activeSimulations);

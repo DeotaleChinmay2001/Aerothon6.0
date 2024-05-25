@@ -42,7 +42,6 @@ async function prepareFlightData(sourceICAO, destinationICAO) {
          updatedPath.push(previousPath[i]);
         }
         updatedPath.push(currentLocation);
-        console.log("pathData", pathData);
         for (const node of pathData.nodes) {
           updatedPath.push(node);
        }

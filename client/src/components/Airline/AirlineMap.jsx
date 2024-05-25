@@ -6,9 +6,6 @@ import L from 'leaflet';
 import iconUrl from "../../assets/airplaneicon.png";
 
 const AirlineMap = ({ source, destination, lat, lon, planePath }) => {
-  // Check if lat, lon, source, and destination are properly defined
-  console.log("source",source)
-  console.log("destination",destination)
   if (!lat || !lon || !source || !destination || !source.Latitude || !source.Longitude || !destination.Latitude || !destination.Longitude) {
     console.error('Invalid coordinates:', { lat, lon, source, destination });
     return <div>Error: Invalid coordinates provided</div>;

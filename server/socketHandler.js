@@ -48,7 +48,6 @@ function initializeSocket(server) {
           waypoints,
           pathData
         } = await prepareFlightData(sourceICAO, destinationICAO);
-        console.log("sourceData",sourceData);
         sample = {
           flightId: uuidv4(),
           User: userName,

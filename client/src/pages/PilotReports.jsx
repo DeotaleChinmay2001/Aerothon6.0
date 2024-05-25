@@ -11,7 +11,6 @@ const Reports = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        console.log("user", userName);
         const response = await axios.get(
           VITE_CLIENT_REPORT_APIURL + 'user/' + userName
         );
@@ -25,7 +24,6 @@ const Reports = () => {
   }, [userName]);
 
   const convertReportDetails = (report) => {
-    console.log("report=========================",report)
     return {
       id: report.flightId,
       source: report.coordinate.City,

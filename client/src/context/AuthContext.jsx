@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, userType, navigate) => {
     const SERVER_LINK = import.meta.env.VITE_CLIENT_USER_APIURL;
     const encryptionKey = 'airbusaerothon6';
-    console.log(SERVER_LINK, encryptionKey);
     try {
       const encryptedData = CryptoJS.AES.encrypt(
         JSON.stringify({ email, password, userType }),
@@ -35,7 +34,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userType", userType);
         localStorage.setItem("userName", email);
-        console.log("email", email)
         setIsAuthenticated(true);
         setUserType(userType);
         setUserName(email);

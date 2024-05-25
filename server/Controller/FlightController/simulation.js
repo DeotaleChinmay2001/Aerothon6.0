@@ -106,13 +106,10 @@ function startSimulation(
       const nextWaypoint2 = waypoints2[currentWaypointIndex + 1];
       const currentWaypoint = waypoints[currentWaypointIndex];
       const nextWaypoint = waypoints[currentWaypointIndex + 1];
-      console.log("nextWaypoint2", nextWaypoint2);
-      console.log("nextWaypoint1", nextWaypoint);
       if (!nextWaypoint2) {
         clearInterval(simulationInterval);
         simulationIntervals.delete(socket.id);
         socket.emit("simulationMessage", { message: "Plane Reached destination " });
-        console.log("Plane has arrived at the final destination");
         return;
       }
 
@@ -122,8 +119,6 @@ function startSimulation(
         speed,
         intervalTime
       );
-      console.log("waypoints ================", planeState);
-      console.log(nextWaypoint2);
       planeState.lat = newLatitude;
       planeState.lon = newLongitude;
       if (activeSimulations.has(socket.id)) {
@@ -197,8 +192,6 @@ function startSimulation(
           updatedWeatherData
         );
         prediction["weather"] = flaskResponseWeather.data; // Use "weather" as a string
-        console.log("weatherReport", flaskResponseWeather.data);
-      
       } catch (error) {
         console.error("Error making prediction:", error);
       }
@@ -226,8 +219,6 @@ function startSimulation(
           prediction: prediction,
         })
       );
-      console.log("newwaypoint", nextWaypoint);
-      console.log("newwaypoint", nextWaypoint2);
       const distanceToNextWaypoint = calculateDistance(
         planeState.lat,
         planeState.lon,
@@ -328,7 +319,6 @@ function resumeSimulation(socketID, activeSimulations) {
     simulation.status = 1;
     activeSimulations.set(socketID, simulation);
   }
-  console.log("resume", socketID, activeSimulations);
 
   return;
 }
